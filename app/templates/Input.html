@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Symptoms</title>
+</head>
+<body>
+    <form method="get" action="/app/run/">
+        <input type="text" name="Symptoms" placeholder="Enter the Symptoms you had">
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if top_candidates %}
+        <h2>Possible Conditions</h2>
+        <ul>
+            {% for c in top_candidates %}
+                <li>
+                    <b>{{ c.condition }}</b> (Score: {{ c.score }})<br>
+                    <i>Matched symptoms:</i> {{ c.requires_hits|join:", " }} {{ c.supports_hits|join:", " }}
+                    <br><br>
+                    <b>Home Remedies:</b>
+                    <ul>
+                        {% for r in c.home_remedies %}
+                            <li>{{ r }}</li>
+                        {% endfor %}
+                    </ul>
+                    <b>When to see a Doctor:</b>
+                    <ul>
+                        {% for warn in c.when_to_see_doctor %}
+                            <li>{{ warn }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</body>
+</html>

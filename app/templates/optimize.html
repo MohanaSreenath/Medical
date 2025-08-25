@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Symptom Check</title>
+    <style>
+        .collapse {
+            display: none;
+        }
+    </style>
+    <script>
+        function toggle(id) {
+            var x = document.getElementById(id);
+            x.style.display = (x.style.display === "none") ? "block" : "none";
+        }
+    </script>
+</head>
+<body>
+    <!-- Input form (points to /run_opt/ instead of /run/) -->
+    <form method="get" action="/app/results/">
+        <input type="text" name="Symptoms" placeholder="Enter your symptoms" value="{{ request.GET.Symptoms }}">
+        <input type="submit" value="Check">
+    </form>
+
+    {% if top_candidates %}
+        <h2>Most Likely Conditions</h2>
+        <ul>
+            {% for c in top_candidates|slice:":2" %}
+                <li>
+                    <b>{{ c.condition }}</b> (Score: {{ c.score }})<br>
+                    <i>Matched symptoms:</i> {{ c.requires_hits|join:", " }} {{ c.supports_hits|join:", " }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Collapsible section for other conditions -->
+        <button onclick="toggle('others')">Show other possible conditions</button>
+        <div id="others" class="collapse">
+            <ul>
+                {% for c in top_candidates|slice:"2:" %}
+                    <li><b>{{ c.condition }}</b> (Score: {{ c.score }})</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <h2>General Care Tips</h2>
+        <ul>
+            {% for r in general_remedies %}
+                <li>{{ r }}</li>
+            {% endfor %}
+        </ul>
+
+        <h2>When to See a Doctor</h2>
+        <ul>
+            {% for w in general_warnings %}
+                <li>{{ w }}</li>
+            {% endfor %}
+        </ul>
+
+        <br>
+        <a href="/app/details/">View full details →</a>
+    {% endif %}
+</body>
+</html>
