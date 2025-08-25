@@ -66,6 +66,7 @@ def run_opt(request):
         'general_remedies': final_remedies,
         'general_warnings': final_warnings
     })
+
 def dedup(seq):
     seen = set()
     return [x for x in seq if not (x in seen or seen.add(x))]
